@@ -38,12 +38,12 @@ $ source hh-env
 
 ~~~~
 $ source hh-env
-(hh-env)$ cd hh-service
-(hh-env)$ HHAPPS_INVENTORY_SETTINGS=$(pwd)/inventory-development.cfg hhaoos-inventory -d
+(hh-env)$ cd hh-apps
+(hh-env)$ HHAPPS_INVENTORY_API_SETTINGS=$(pwd)/api-inventory-development.cfg hhapps-inventory-api -d
 ~~~~
 
 * Note
- * `HHSERVICE_INVENTORY_SETTINGS` = an API setting file environent
- * `inventory-development.cfg` = an API setting file contains configurating variables.
- * `hhapps-inventory` = an API executable file
+ * `HHSERVICE_INVENTORY_API_SETTINGS` = an API setting file environent
+ * `api-inventory-development.cfg` = an API setting file contains configurating variables.
+ * `hhapps-inventory-api` = an API executable file
 
