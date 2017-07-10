@@ -1,10 +1,10 @@
 
-from hhservice import nutrition
+from hhservice.nutrition import api
 
 def main():
-    options = nutrition.get_program_options()
+    options = api.get_program_options()
    
-    app = nutrition.create_app()
+    app = api.create_app()
     app.run(
         debug=options.debug,
         host=options.host,

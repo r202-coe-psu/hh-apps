@@ -1,13 +1,11 @@
-from flask import Blueprint
 import marshmallow_jsonschema as mjs
 import marshmallow_jsonapi as mja
 from marshmallow import fields
 import datetime
 
-from hhapps.inventory.renderers import render_json
-from hhapps.inventory import schemas
 
-module = Blueprint('schemas', __name__, url_prefix='/schemas')
+def dasherize(text):
+        return text.replace('_', '-')
 
 
 class JSONAPISchema(mjs.JSONSchema):
@@ -55,9 +53,9 @@ class JSONAPISchema(mjs.JSONSchema):
                 if field == fields.String:
                     v['items'] = dict(type='string')
             if 'title' in v:
-                v['title'] = schemas.common.dasherize(v['title'])
+                v['title'] = dasherize(v['title'])
 
-            new_properties[schemas.common.dasherize(k)] = v
+            new_properties[dasherize(k)] = v
         return new_properties
 
     def get_required(self, obj):
@@ -86,16 +84,3 @@ class JSONAPISchema(mjs.JSONSchema):
             }
 
         return schema
-
-
-@module.route('')
-def all():
-    json_schema = JSONAPISchema()
-
-    schema_list = schemas.__all__
-
-    all_schemas = {}
-    for schema in schema_list:
-        all_schemas[schema.Meta.type_] = json_schema.dump(schema()).data
-
-    return render_json(all_schemas)

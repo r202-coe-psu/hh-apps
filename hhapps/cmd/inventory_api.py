@@ -1,9 +1,9 @@
 
-from hhapps import inventory
+from hhapps.inventory import api
 
 def main():
-    options = inventory.get_program_options()
-    app = inventory.create_app()
+    options = api.get_program_options()
+    app = api.create_app()
 
     app.run(
         debug=options.debug,

@@ -1,9 +1,9 @@
 from flask import abort
 from flask_jwt_extended import JWTManager
 
-from hhservice.api import models
+from hhapps.inventory.api import models
 
-from .renderers import render_json
+from hhapps.common.renderers import render_json
 
 
 def init_jwt(app):

@@ -41,7 +41,7 @@ setup(
     ],
     entry_points='''
         [console_scripts]
-        hhapps-inventory=hhapps.cmd.inventory:main
-        hhapps-nutrition=hhapps.cmd.nutrition:main
+        hhapps-inventory-api=hhapps.cmd.inventory_api:main
+        hhapps-nutrition-api=hhapps.cmd.nutrition_api:main
     '''
 )

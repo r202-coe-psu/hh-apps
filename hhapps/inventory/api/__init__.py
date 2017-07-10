@@ -3,16 +3,17 @@ import optparse
 
 from flask import Flask
 
+from hhapps.common import renderers
+
 from . import models
 from . import views
-from . import renderers
 from . import acl
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('hhapps.inventory.default_settings')
-    app.config.from_envvar('HHAPPS_INVENTORY_SETTINGS', silent=True)
+    app.config.from_object('hhapps.inventory.api.default_settings')
+    app.config.from_envvar('HHAPPS_INVENTORY_API_SETTINGS', silent=True)
 
     models.init_db(app)
     views.register_blueprint(app)
@@ -30,10 +31,10 @@ def create_app():
 
 def get_program_options(default_host='127.0.0.1',
                         default_port='5051'):
-    """
-    Takes a flask.Flask instance and runs it. Parses 
-    command-line flags to configure the app.
-    """
+    '''
+    Takes a flask.Flask instance and runs it.
+    Parses command-line flags to configure the app.
+    '''
 
     # Set up the command-line options
     parser = optparse.OptionParser()
@@ -45,7 +46,7 @@ def get_program_options(default_host='127.0.0.1',
                       help="Port for the Flask app "
                            "[default %s]" % default_port,
                       default=default_port)
-    # Two options useful for debugging purposes, but 
+    # Two options useful for debugging purposes, but
     # a bit dangerous so not exposed in the help message.
     parser.add_option("-d", "--debug",
                       action="store_true", dest="debug",

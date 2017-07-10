@@ -3,16 +3,17 @@ import optparse
 
 from flask import Flask
 
+from hhapps.common import renderers
+
 from . import models
 from . import views
-from . import renderers
 from . import acl
 
 
 def create_app():
     app = Flask(__name__)
-    app.config.from_object('hhapps.nutrition.default_settings')
-    app.config.from_envvar('HHAPPS_NUTRITION_SETTINGS', silent=True)
+    app.config.from_object('hhapps.nutrition.api.default_settings')
+    app.config.from_envvar('HHAPPS_NUTRITION_API_SETTINGS', silent=True)
 
     models.init_db(app)
     views.register_blueprint(app)
