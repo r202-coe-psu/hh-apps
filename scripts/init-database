@@ -1,0 +1,98 @@
+#!/usr/bin/env python3
+
+import optparse
+
+from hhservice.api import models
+
+def get_program_options(default_host='127.0.0.1',
+            default_port=27017, default_dbname='test'):
+
+    """
+    Takes a flask.Flask instance and runs it. Parses 
+    command-line flags to configure the app.
+    """
+
+    # Set up the command-line options
+    parser = optparse.OptionParser()
+    parser.add_option("-H", "--host",
+                      help="Hostname of the database " + \
+                           "[default %s]" % default_host,
+                      default=default_host)
+    parser.add_option("-P", "--port",
+                      help="Port for the database " + \
+                           "[default %s]" % default_port, type=int,
+                      default=default_port)
+
+    parser.add_option("-d", "--db",
+            help="Database name " + \
+            "[default %s]" % default_dbname,
+            default=default_dbname)
+
+    parser.add_option("-s", "--secret",
+            help="Secret key " + \
+            "[default %s]" % '',
+            default='')
+
+
+
+    # parser.add_option("-D", "--debug",
+    #                   action="store_true", dest="debug",
+    #                   help=optparse.SUPPRESS_HELP)
+
+    options, _ = parser.parse_args()
+
+    return options
+
+def main():
+    options = get_program_options()
+
+    import mongoengine as me
+
+   
+    me.connection._connection_settings = {}
+    me.connection._connections = {}
+    me.connection._dbs = {}
+    
+    conn = me.connect(db=options.db,
+                      host=options.host,
+                      port=options.port,
+                      alias='default')
+    
+    from hhservice.api import models
+    user = models.User.objects(username='admin').first()
+    if not user:
+        print('create user admin')
+        user = models.User(
+                username='admin',
+                email='admin@hh.local',
+                first_name='admin',
+                last_name='admin',
+                status='active',
+                roles=['admin', 'user'])
+
+        user.set_password('password', salt=options.secret)
+        user.save()
+
+    apps = [
+            dict(name='Inventory',
+                 description='Inventory management in your house.',
+                 detail='Tracking and reminding food in your house.',
+                 publicurl='http://localhost:5051',
+                 status='active'),
+            dict(name='Nutrition',
+                 description='Nutrition tracking, meal plan and recipe.',
+                 detail='Nutrition tracking, meal plan and recipe.',
+                 publicurl='http://localhost:5052',
+                 status='active')
+            ]
+                 
+    for app_data in apps:
+        app = models.Application.objects(name=app_data['name']).first()
+        if not app:
+            app = models.Application(**app_data)
+
+            print('create service name', app_data['name'])
+            app.save()
+
+if __name__ == '__main__':
+    main()
