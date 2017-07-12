@@ -1,9 +1,10 @@
 
-from .inventories import Inventory
+from .inventories import Inventory, User, Building
 
-__all__ =[Inventory]
+__all__ = [User, Building, Inventory]
 
 from flask_mongoengine import MongoEngine
+import mongoengine as me
 
 db = MongoEngine()
 

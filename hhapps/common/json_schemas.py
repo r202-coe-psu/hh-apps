@@ -20,6 +20,7 @@ class JSONAPISchema(mjs.JSONSchema):
         properties = {}
 
         for field_name, field in sorted(obj.fields.items()):
+            # print('ff', field_name, field.__class__)
             if hasattr(field, '_jsonschema_type_mapping'):
                 schema = field._jsonschema_type_mapping()
             elif field.__class__ in mapping:
@@ -32,7 +33,7 @@ class JSONAPISchema(mjs.JSONSchema):
                 try:
                     schema = self.__class__._from_relationship_type(field)
                 except Exception as e:
-                    print(e)
+                    print('rr', e)
             else:
                 raise ValueError('unsupported field type %s' % field)
 
@@ -75,12 +76,22 @@ class JSONAPISchema(mjs.JSONSchema):
         if field.metadata.get('metadata', {}).get('title'):
             schema['title'] = field.metadata['metadata'].get('title')
 
-        sub_schema = cls().dump(field._Relationship__schema()).data
+        sub_schema = None
+        if field._Relationship__schema:
+            sub_schema = cls().dump(field._Relationship__schema()).data
+
+        if sub_schema:
+            meta = {'jsonapitype': field._Relationship__schema.Meta.type_}
+            sub_schema['meta'] = meta
+            print('sbs', sub_schema)
 
         if field.many:
             schema = {
                 'type': ["array"] if field.required else ['array', 'null'],
                 'items': sub_schema,
             }
+        else:
+            if sub_schema:
+                schema.update(sub_schema)
 
         return schema

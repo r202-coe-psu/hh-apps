@@ -18,19 +18,18 @@ class InventorySchema(Schema):
             related_url='/users/{user_id}',
             related_url_kwargs={'user_id': '<id>'},
             many=False,
-            # schema=UserSchema,
+            schema=common.UserSchema,
             include_resource_linkage=True,
             type_='users',
             dump_only=True
             )
-    members = fields.Relationship(
-            related_url='/users/{user_id}',
-            related_url_kwargs={'user_id': '<id>'},
-            many=True,
-            # schema=UserSchema,
+    building = fields.Relationship(
+            related_url='/buildings/{building_id}',
+            related_url_kwargs={'building_id': '<id>'},
+            many=False,
+            schema=common.BuildingSchema,
             include_resource_linkage=True,
-            type_='members',
-            dump_only=True
+            type_='buildings',
             )
 
     created_date = fields.DateTime(dump_only=True)

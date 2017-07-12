@@ -1,10 +1,10 @@
-# HHService
+# HHApps
 
 HHApps is a part of Home Hero projects. HHApps provides applications for smart living.
 
 # Development
 
-## HHService Repository
+## HHApps Repository
 
  * Clone repository
 

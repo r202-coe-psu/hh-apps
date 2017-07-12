@@ -2,14 +2,22 @@ import mongoengine as me
 import datetime
 
 
-class Inventory(me.Document):
+class User(me.EmbeddedDocument):
+    id = me.ObjectIdField(required=True)
 
+
+class Building(me.EmbeddedDocument):
+    id = me.ObjectIdField(required=True)
+
+
+class Inventory(me.Document):
     name = me.StringField(required=True)
     description = me.StringField()
     tags = me.ListField(me.StringField())
 
-    owner_id = me.ObjectIdField(required=True)
-    
+    owner = me.EmbeddedDocumentField(User)
+    building = me.EmbeddedDocumentField(Building)
+
     status = me.StringField(required=True, default='deactivate')
 
     created_date = me.DateTimeField(required=True,
