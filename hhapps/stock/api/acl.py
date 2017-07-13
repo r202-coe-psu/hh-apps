@@ -1,7 +1,7 @@
 from flask import abort
 from flask_jwt_extended import JWTManager, get_jwt_claims
 
-from hhapps.inventory.api import models
+from hhapps.stock.api import models
 
 from hhapps.common.renderers import render_json
 

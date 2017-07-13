@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from hhapps.common.renderers import render_json
 from hhapps.common.json_schemas import JSONAPISchema
-from hhapps.inventory.api import schemas
+from hhapps.stock.api import schemas
 
 
 module = Blueprint('schemas', __name__, url_prefix='/schemas')

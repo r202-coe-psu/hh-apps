@@ -1,7 +1,7 @@
+from .common import User, Building
+from .stocks import Stock
 
-from .inventories import Inventory, User, Building
-
-__all__ = [User, Building, Inventory]
+__all__ = [User, Building, Stock]
 
 from flask_mongoengine import MongoEngine
 import mongoengine as me

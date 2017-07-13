@@ -1,5 +1,5 @@
 
-from hhapps.inventory import api
+from hhapps.stock import api
 
 def main():
     options = api.get_program_options()

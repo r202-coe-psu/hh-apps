@@ -1,16 +1,10 @@
 import mongoengine as me
 import datetime
 
-
-class User(me.EmbeddedDocument):
-    id = me.ObjectIdField(required=True)
+from .common import User, Building
 
 
-class Building(me.EmbeddedDocument):
-    id = me.ObjectIdField(required=True)
-
-
-class Inventory(me.Document):
+class Stock(me.Document):
     name = me.StringField(required=True)
     description = me.StringField()
     tags = me.ListField(me.StringField())

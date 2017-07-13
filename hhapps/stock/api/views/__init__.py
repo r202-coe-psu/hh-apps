@@ -1,8 +1,8 @@
 from . import schemas
-from . import inventories
+from . import stocks
 
 __all__ = [schemas,
-           inventories]
+           stocks]
 
 def register_blueprint(app):
     for view in __all__:
