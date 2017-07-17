@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source $(pwd)/../hh-env/bin/activate
+HHAPPS_STOCK_API_SETTINGS=$(pwd)/stock-api-development.cfg hhapps-stock-api -d

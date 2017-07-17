@@ -1,0 +1,4 @@
+#!/bin/bash
+
+source $(pwd)/../hh-env/bin/activate
+HHSERVICE_API_SETTINGS=$(pwd)/nutrition-api-development.cfg hhapps-nutrition-api -d
