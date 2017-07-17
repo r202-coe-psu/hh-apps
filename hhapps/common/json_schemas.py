@@ -11,7 +11,9 @@ def dasherize(text):
 class JSONAPISchema(mjs.JSONSchema):
 
     def get_properties(self, obj):
-        mapping = {v: k for k, v in obj.TYPE_MAPPING.items()}
+        mapping = {}
+        if hasattr(obj, 'TYPE_MAPPING'):
+            mapping = {v: k for k, v in obj.TYPE_MAPPING.items()}
         mapping[fields.Email] = mjs.base.text_type
         mapping[fields.Dict] = dict
         mapping[fields.List] = list
@@ -20,7 +22,6 @@ class JSONAPISchema(mjs.JSONSchema):
         properties = {}
 
         for field_name, field in sorted(obj.fields.items()):
-            # print('ff', field_name, field.__class__)
             if hasattr(field, '_jsonschema_type_mapping'):
                 schema = field._jsonschema_type_mapping()
             elif field.__class__ in mapping:
@@ -29,11 +30,7 @@ class JSONAPISchema(mjs.JSONSchema):
             elif isinstance(field, fields.Nested):
                 schema = self.__class__._from_nested_schema(field)
             elif isinstance(field, mja.fields.Relationship):
-                # print(field_name, field)
-                try:
-                    schema = self.__class__._from_relationship_type(field)
-                except Exception as e:
-                    print('rr', e)
+                schema = self.__class__._from_relationship_type(field)
             else:
                 raise ValueError('unsupported field type %s' % field)
 
@@ -46,18 +43,7 @@ class JSONAPISchema(mjs.JSONSchema):
 
             properties[field.name] = schema
 
-        # print('properties', properties)
-        new_properties = {}
-        for k, v in properties.items():
-            if 'type' in v and v['type'] == 'array':
-                field = obj.fields[k].container.__class__
-                if field == fields.String:
-                    v['items'] = dict(type='string')
-            if 'title' in v:
-                v['title'] = dasherize(v['title'])
-
-            new_properties[dasherize(k)] = v
-        return new_properties
+        return properties
 
     def get_required(self, obj):
         required = [t.replace('_', '-') for t in super().get_required(obj)]
@@ -66,7 +52,7 @@ class JSONAPISchema(mjs.JSONSchema):
 
     @classmethod
     def _from_relationship_type(cls, field):
-        schema = cls().dump(field).data
+        schema = {'type': 'object'}
 
         if field.metadata.get('metadata', {}).get('description'):
             schema['description'] = (
@@ -77,13 +63,13 @@ class JSONAPISchema(mjs.JSONSchema):
             schema['title'] = field.metadata['metadata'].get('title')
 
         sub_schema = None
-        if field._Relationship__schema:
-            sub_schema = cls().dump(field._Relationship__schema()).data
+        if field.schema:
+            sub_schema = cls().dump(field.schema).data
 
         if sub_schema:
-            meta = {'jsonapitype': field._Relationship__schema.Meta.type_}
+            meta = {'jsonapitype': field.schema.Meta.type_}
             sub_schema['meta'] = meta
-            print('sbs', sub_schema)
+            # print('sbs', sub_schema)
 
         if field.many:
             schema = {
@@ -93,5 +79,4 @@ class JSONAPISchema(mjs.JSONSchema):
         else:
             if sub_schema:
                 schema.update(sub_schema)
-
         return schema

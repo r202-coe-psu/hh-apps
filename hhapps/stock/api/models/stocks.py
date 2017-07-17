@@ -20,4 +20,4 @@ class Stock(me.Document):
                                     default=datetime.datetime.utcnow,
                                     auto_now=True)
 
-    meta = {'collection': 'inventories'}
+    meta = {'collection': 'stocks'}

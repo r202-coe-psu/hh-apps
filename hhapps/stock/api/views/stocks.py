@@ -5,7 +5,7 @@ from hhapps.stock.api import models
 from hhapps.stock.api import schemas
 from hhapps.common.renderers import render_json
 
-module = Blueprint('stockss', __name__, url_prefix='/stocks')
+module = Blueprint('stocks', __name__, url_prefix='/stocks')
 
 
 def get_stock_error_not_found():
@@ -28,7 +28,6 @@ def get_stock_error_not_found():
 @jwt_required
 def create():
     schema = schemas.StockSchema()
-    print('got', request.get_json())
     try:
         stock_data = schema.load(request.get_json())
     except Exception as e:
@@ -54,7 +53,15 @@ def create():
 def list():
     schema = schemas.StockSchema(many=True)
     owner_id = current_user.id
-    stocks = models.Stock.objects(owner_id=owner_id)
+    building_id = request.args.get('building-id', None)
+    stocks = []
+
+    if building_id:
+        stocks = models.Stock.objects(owner__id=owner_id,
+                                      building__id=building_id)
+    else:
+        stocks = models.Stock.objects(owner__id=owner_id)
+
     return render_json(schema.dump(stocks).data)
 
 
