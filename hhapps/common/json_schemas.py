@@ -41,7 +41,7 @@ class JSONAPISchema(mjs.JSONSchema):
                         schema, field, validator, obj
                     )
 
-            properties[field.name] = schema
+            properties[field.name.replace('_', '-')] = schema
 
         return properties
 

@@ -34,16 +34,25 @@ $ source hh-env
 ~~~~
 
 ### API app module
+* Create stock api configuration file name `api-stock-development.cfg`
+~~~~
+# secret_key same value as HHService API
+SECRET_KEY = '\xca\xe0p\xfdj\xf8\xcem?\x0f\x9d\x8e\xa6\xa0\xfd\x00/t7c\x9e\x98'
+
+# Database
+MONGODB_DB = 'homehero-stock'
+~~~~
+
 * Run inventory api module
 
 ~~~~
 $ source hh-env
 (hh-env)$ cd hh-apps
-(hh-env)$ HHAPPS_INVENTORY_API_SETTINGS=$(pwd)/api-inventory-development.cfg hhapps-inventory-api -d
+(hh-env)$ HHAPPS_STOCK_API_SETTINGS=$(pwd)/api-stock-development.cfg hhapps-stock-api -d
 ~~~~
 
 * Note
- * `HHSERVICE_INVENTORY_API_SETTINGS` = an API setting file environent
- * `api-inventory-development.cfg` = an API setting file contains configurating variables.
- * `hhapps-inventory-api` = an API executable file
+ * `HHAPPS_STOCK_API_SETTINGS` = an API setting file environent
+ * `api-stock-development.cfg` = an API setting file contains configurating variables.
+ * `hhapps-stock-api` = an API executable file
 
