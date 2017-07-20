@@ -37,7 +37,7 @@ $ source hh-env
 * Create stock api configuration file name `api-stock-development.cfg`
 ~~~~
 # secret_key same value as HHService API
-SECRET_KEY = '\xca\xe0p\xfdj\xf8\xcem?\x0f\x9d\x8e\xa6\xa0\xfd\x00/t7c\x9e\x98'
+SECRET_KEY = '722661a83fab23164071e17a888de24c25db80b42fde'
 
 # Database
 MONGODB_DB = 'homehero-stock'
