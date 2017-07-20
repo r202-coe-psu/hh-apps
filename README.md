@@ -23,10 +23,13 @@ $ source hh-env
 
 * Install `hhclient` for web module
  * Clone repository
+
 ~~~~
 git clone git@138.47.200.245:HomeHero-Projects/python-hhclient.git
 ~~~~
+
  * install `hhclient` in testing environment
+
 ~~~~
 $ source hh-env
 (hh-env)$ cd python-hhclient
@@ -35,6 +38,7 @@ $ source hh-env
 
 ### API app module
 * Create stock api configuration file name `api-stock-development.cfg`
+
 ~~~~
 # secret_key same value as HHService API
 SECRET_KEY = '722661a83fab23164071e17a888de24c25db80b42fde'
