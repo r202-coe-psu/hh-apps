@@ -11,21 +11,16 @@ class ItemSchema(Schema):
                          validator=ma.validate.Length(min=3, max=20))
     description = fields.String()
     tags = fields.List(fields.String())
+    upc = fields.String()
+    color = fields.String()
+    size = fields.String()
+    weight = fields.String()
+    dimension = fields.String()
+    category = fields.String()
 
     manufactory = fields.String()
     meta = fields.Dict()
 
-    upc = fields.String()
-
-    user = fields.Relationship(
-            related_url='/users/{user_id}',
-            related_url_kwargs={'user_id': '<id>'},
-            many=False,
-            schema=common.UserSchema,
-            include_resource_linkage=True,
-            type_='users',
-            dump_only=True
-            )
 
     status = fields.String(requred=True, default='deactive')
 

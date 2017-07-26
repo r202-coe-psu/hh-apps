@@ -8,6 +8,7 @@ from hhapps.common import renderers
 from . import models
 from . import views
 from . import acl
+from . import request_context
 
 
 def create_app():
@@ -19,6 +20,7 @@ def create_app():
     views.register_blueprint(app)
     renderers.init_json(app)
     acl.init_jwt(app)
+    request_context.init_request_context(app)
 
     # @app.before_request
     # def before_request():
