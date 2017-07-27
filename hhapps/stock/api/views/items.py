@@ -160,6 +160,9 @@ def add_item_from_upcitemdb(upc):
         data_source = models.DataSource(data=item_upcitemdb,
                                         provider='upcitemdb')
 
+        image = item_upcitemdb['images'][0] if 'images' in item_upcitemdb\
+            and len(item_upcitemdb) > 0 else None
+
         item = models.Item(
                 name=item_upcitemdb['title'],
                 description=item_upcitemdb['description'],
@@ -171,8 +174,8 @@ def add_item_from_upcitemdb(upc):
                 brand=brand,
                 sources=[data_source],
                 category='food',
-                status='active'
-                )
+                status='active',
+                image=image)
         item.save()
 
     return item
@@ -190,41 +193,41 @@ def add_item_from_nutritionix(upc, item=None):
             and item_nutritionix['status_code'] == 404:
         abort(get_item_error_not_found())
 
-        data_source = models.DataSource(data=item_nutritionix,
-                                        provider='nutritionix')
-        if not item:
-            brand = models.Brand.objects(
-                    name=item_nutritionix['brand_name']).first()
-            if not brand:
-                brand = models.Brand(name=item_nutritionix['brand_name'])
-                brand.save()
-                brand.reload()
+    data_source = models.DataSource(data=item_nutritionix,
+                                    provider='nutritionix')
+    if not item:
+        brand = models.Brand.objects(
+                name=item_nutritionix['brand_name']).first()
+        if not brand:
+            brand = models.Brand(name=item_nutritionix['brand_name'])
+            brand.save()
+            brand.reload()
 
-            item = models.Item(
-                    name=item_nutritionix['item_name'],
-                    description=item_nutritionix['item_description'],
-                    upc=upc,
-                    brand=brand,
-                    category='food',
-                    sources=[data_source],
-                    status='active')
-            item.save()
-            item.reload()
+        item = models.Item(
+                name=item_nutritionix['item_name'],
+                description=item_nutritionix['item_description'],
+                upc=upc,
+                brand=brand,
+                category='food',
+                sources=[data_source],
+                status='active')
+        item.save()
+        item.reload()
 
-        allergen = models.Allergen()
-        for k, mk in NUTRITIONIX_ALLERGEN_MAPPER.items():
-            setattr(allergen, mk, item_nutritionix[k])
+    allergen = models.Allergen()
+    for k, mk in NUTRITIONIX_ALLERGEN_MAPPER.items():
+        setattr(allergen, mk, item_nutritionix[k])
 
-        nutrition_fact = models.NutritionFact()
-        for k, mk in NUTRITIONIX_NUTRITION_FACT_MAPPER.items():
-            setattr(nutrition_fact, mk, item_nutritionix[k])
+    nutrition_fact = models.NutritionFact()
+    for k, mk in NUTRITIONIX_NUTRITION_FACT_MAPPER.items():
+        setattr(nutrition_fact, mk, item_nutritionix[k])
 
-        nutrition = models.Nutrition(item=item,
-                                     allergen=allergen,
-                                     facts=nutrition_fact,
-                                     sources=[data_source])
+    nutrition = models.Nutrition(item=item,
+                                 allergen=allergen,
+                                 facts=nutrition_fact,
+                                 sources=[data_source])
 
-        nutrition.save()
+    nutrition.save()
 
     return item
 

@@ -102,6 +102,7 @@ class Item(me.Document):
     size = me.StringField()
     weight = me.StringField()
     dimension = me.StringField()
+    image = me.URLField()
     category = me.StringField(required=True,
                               choices=CATEGORIES,
                               default='food')

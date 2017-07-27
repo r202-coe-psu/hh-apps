@@ -4,6 +4,7 @@ from marshmallow_jsonapi.flask import Schema
 
 from . import common
 
+
 class ItemSchema(Schema):
 
     id = fields.String(dump_only=True)
@@ -17,10 +18,10 @@ class ItemSchema(Schema):
     weight = fields.String()
     dimension = fields.String()
     category = fields.String()
+    image = fields.URL()
 
     manufactory = fields.String()
     meta = fields.Dict()
-
 
     status = fields.String(requred=True, default='deactive')
 
