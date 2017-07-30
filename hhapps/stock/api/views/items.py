@@ -51,7 +51,7 @@ NUTRITIONIX_NUTRITION_FACT_MAPPER = {
     'nf_protein': 'protein',
     'nf_refuse_pct': 'refuse_pct',
     'nf_saturated_fat': 'saturated_fat',
-    'nf_serving_size_qty': 'serving_size_qty',
+    'nf_serving_size_qty': 'serving_size_quantity',
     'nf_serving_size_unit': 'serving_size_unit',
     'nf_serving_weight_grams': 'serving_weight_grams',
     'nf_servings_per_container': 'servings_per_container',

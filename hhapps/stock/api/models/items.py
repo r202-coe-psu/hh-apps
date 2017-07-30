@@ -70,7 +70,7 @@ class NutritionFact(me.EmbeddedDocument):
     protein = me.IntField()
     refuse_pct = me.IntField()
     saturated_fat = me.IntField()
-    serving_size_qty = me.IntField()
+    serving_size_quantity = me.IntField()
     serving_size_unit = me.StringField()
     serving_weight_grams = me.IntField()
     servings_per_container = me.IntField()

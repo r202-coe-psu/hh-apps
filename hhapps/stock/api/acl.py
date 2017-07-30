@@ -6,10 +6,10 @@ from hhapps.stock.api import models
 from hhapps.common.renderers import render_json
 
 
-class User:
-    def __init__(self, id, roles):
-        self.id = id
-        self.roles = roles
+# class User:
+#     def __init__(self, id, roles):
+#         self.id = id
+#         self.roles = roles
 
 def init_jwt(app):
     jwt = JWTManager(app)
@@ -17,7 +17,7 @@ def init_jwt(app):
     @jwt.user_loader_callback_loader
     def user_loader_callback(identity):
 
-        user = User(identity,
-                    get_jwt_claims())
+        user = models.User(id=identity)
+        user.roles = get_jwt_claims()
                     
         return user
