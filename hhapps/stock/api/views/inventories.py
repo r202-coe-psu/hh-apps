@@ -50,7 +50,7 @@ def create(stock_id):
     print('data:', data)
     data['adder'] = adder
     data['stock'] = stock
-    
+
     item = None
     if data['item'] and len(data['item']) > 0:
         try:
@@ -74,6 +74,8 @@ def create(stock_id):
     if nutrition:
         inventory.serving_size_unit = nutrition.facts.serving_size_unit
         inventory.serving_size_quantity = nutrition.facts.serving_size_quantity
+        inventory.consuming_size = data['quantity'] * \
+            nutrition.facts.servings_per_container
     inventory.save()
 
     return render_json(schema.dump(inventory).data)
@@ -115,3 +117,26 @@ def delete(stock_id, inventory_id):
     stock.delete()
 
     return render_json()
+
+
+@module.route('/list-items', methods=['GET'])
+@jwt_required
+def list_items(stock_id):
+    schema = schemas.ItemSchema(many=True)
+    stock = models.Stock.objects.with_id(stock_id)
+
+    inventories = models.Inventory.objects(stock=stock, status='active')
+    items = set([inventory.item for inventory in inventories])
+
+    return render_json(schema.dump(items).data)
+
+
+@module.route('/consume', methods=['POST'])
+def consume(stock_id):
+    stock = models.Stock.objects.with_id(stock_id)
+
+    inventories = models.Inventory.objects(stock=stock, status='active')
+    items = set([inventory.item for inventory in inventories])
+
+    return render_json(schema.dump(items).data)
+

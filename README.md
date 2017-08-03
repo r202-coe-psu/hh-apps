@@ -45,6 +45,10 @@ SECRET_KEY = '722661a83fab23164071e17a888de24c25db80b42fde'
 
 # Database
 MONGODB_DB = 'homehero-stock'
+
+# third party library from nutritionx
+CLIENTS_NUTRITIONX_APPLICATION_ID = ''
+CLIENTS_NUTRITIONX_API_KEY = ''
 ~~~~
 
 * Run inventory api module

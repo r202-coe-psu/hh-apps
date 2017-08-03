@@ -5,6 +5,22 @@ from . import common
 from . import items
 
 
+class ConsumingItemSchema(Schema):
+    id = fields.String(dump_only=True, allow_none=True)
+    item = fields.Relationship(
+            related_url='/items/{item_id}',
+            related_url_kwargs={'item_id': '<id>'},
+            many=False,
+            schema=items.ItemSchema,
+            include_resource_linkage=True,
+            type_='items',
+            allow_none=True
+            )
+    consuming_size = fields.Integer()
+    
+
+
+
 class InventorySchema(Schema):
 
     id = fields.String(dump_only=True)
@@ -19,6 +35,10 @@ class InventorySchema(Schema):
             )
     item_upc = fields.String(allow_none=True)
     quantity = fields.Integer(required=True)
+    consuming_size = fields.Float(dump_only=True)
+    serving_size_quantity = fields.Float(dump_only=True)
+    serving_size_unit = fields.String(dump_only=True)
+
     expired_date = fields.DateTime()
 
     status = fields.String(requred=True, dump_only=True, default='deactive')
