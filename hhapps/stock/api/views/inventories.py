@@ -34,7 +34,6 @@ def create(stock_id):
     schema = schemas.InventorySchema()
 
     stock = models.Stock.objects.with_id(stock_id)
-    print(request.get_json())
     try:
         inventory_data = schema.load(request.get_json())
     except Exception as e:
@@ -71,11 +70,14 @@ def create(stock_id):
     inventory = models.Inventory(status='active',
                                  **data)
     nutrition = models.Nutrition.objects(item=item).first()
+
     if nutrition:
         inventory.serving_size_unit = nutrition.facts.serving_size_unit
         inventory.serving_size_quantity = nutrition.facts.serving_size_quantity
-        inventory.consuming_size = data['quantity'] * \
+        inventory.total_serving_size = data['quantity'] * \
             nutrition.facts.servings_per_container
+        inventory.available_serving_size = inventory.total_serving_size
+
     inventory.save()
 
     return render_json(schema.dump(inventory).data)
@@ -134,9 +136,22 @@ def list_items(stock_id):
 @module.route('/consume', methods=['POST'])
 def consume(stock_id):
     stock = models.Stock.objects.with_id(stock_id)
+    schema = schemas.ConsumingItemSchema()
 
-    inventories = models.Inventory.objects(stock=stock, status='active')
-    items = set([inventory.item for inventory in inventories])
+    try:
+        consuming_data = schema.load(request.get_json())
+    except Exception as e:
+        print(e)
+        response_dict = request.get_json()
+        response_dict.update(e.messages)
+        response = render_json(response_dict)
+        response.status_code = 400
+        abort(response)
+
+    item = models.Item.objects.with_id(id=consuming_data.item)
+    inventories = models.Inventory.objects(stock=stock,
+                                           item=item,
+                                           status='active')
 
     return render_json(schema.dump(items).data)
 
