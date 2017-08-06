@@ -7,7 +7,8 @@ from .items import (Item,
                     Allergen,
                     NutritionFact,
                     Nutrition)
-from .inventories import Inventory
+from .inventories import (Inventory,
+                          Consumption)
 
 from flask_mongoengine import MongoEngine
 
@@ -19,8 +20,10 @@ __all__ = [User,
            Brand,
            Company,
            Allergen,
+           Nutrition,
            NutritionFact,
-           Inventory]
+           Inventory,
+           Consumption]
 
 
 db = MongoEngine()

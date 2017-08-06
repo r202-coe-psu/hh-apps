@@ -28,12 +28,12 @@ class Inventory(me.Document):
                                     default=datetime.datetime.utcnow,
                                     auto_now=True)
 
-    consumed_logs = me.ListField(me.ReferenceField('ConsumingLog'))
+    consumptions = me.ListField(me.ReferenceField('Consumption', dbref=True))
 
     meta = {'collection': 'inventories'}
 
 
-class ConsumingLog(me.Document):
+class Consumption(me.Document):
     consuming_size = me.FloatField(required=True, default=0)
     consuming_unit = me.StringField(required=True)
     consuming_date = me.DateTimeField(required=True,
@@ -45,5 +45,4 @@ class ConsumingLog(me.Document):
     consumer = me.EmbeddedDocumentField(User)
     status = me.StringField(required=True, default='deactivate')
 
-    meta = {'collection': 'consuming-logs'}
-
+    meta = {'collection': 'consumptions'}

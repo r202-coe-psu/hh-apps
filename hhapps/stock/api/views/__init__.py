@@ -2,11 +2,13 @@ from . import schemas
 from . import stocks
 from . import items
 from . import inventories
+from . import consumptions
 
 __all__ = [schemas,
            stocks,
            items,
-           inventories]
+           inventories,
+           consumptions]
 
 
 def register_blueprint(app):

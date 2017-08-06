@@ -89,7 +89,10 @@ def list(stock_id):
     schema = schemas.InventorySchema(many=True)
     stock = models.Stock.objects.with_id(stock_id)
 
-    inventories = models.Inventory.objects(stock=stock)
+    inventories = models.Inventory.objects(
+            stock=stock,
+            status='active',
+            available_serving_size__gt=0)
 
     return render_json(schema.dump(inventories).data)
 
@@ -134,12 +137,15 @@ def list_items(stock_id):
 
 
 @module.route('/consume', methods=['POST'])
+@jwt_required
 def consume(stock_id):
     stock = models.Stock.objects.with_id(stock_id)
-    schema = schemas.ConsumingItemSchema()
+    schema = schemas.InventoryConsumingItemSchema()
+
+    consumer = current_user._get_current_object()
 
     try:
-        consuming_data = schema.load(request.get_json())
+        consuming_data = schema.load(request.get_json()).data
     except Exception as e:
         print(e)
         response_dict = request.get_json()
@@ -148,10 +154,50 @@ def consume(stock_id):
         response.status_code = 400
         abort(response)
 
-    item = models.Item.objects.with_id(id=consuming_data.item)
-    inventories = models.Inventory.objects(stock=stock,
-                                           item=item,
-                                           status='active')
+    item = models.Item.objects.with_id(consuming_data['item'])
+    inventories = models.Inventory.objects(
+            stock=stock,
+            item=item,
+            status='active',
+            available_serving_size__gt=0).order_by(
+                    '-expired_date'
+                    )
+    consuming_size = consuming_data['consuming_size']
 
-    return render_json(schema.dump(items).data)
+    for inventory in inventories:
+        consumption = models.Consumption(
+                item=item,
+                stock=stock,
+                consumer=consumer,
+                inventory=inventory,
+                consuming_unit=inventory.serving_size_unit
+                )
+        print('consumer:', consumer)
+        if consuming_size <= inventory.available_serving_size:
+            print('consume <=', inventory.id, consuming_size)
+            inventory.available_serving_size -= consuming_size
+            consumption.consuming_size = consuming_size
+            consuming_size -= consuming_size
 
+            if inventory.available_serving_size == 0:
+                inventory.status = 'out of inventory'
+
+        else:
+            print('consume > ', inventory.id, inventory.available_serving_size)
+
+            consumption.consuming_size = inventory.available_serving_size
+            consuming_size -= inventory.available_serving_size
+            inventory.available_serving_size = 0
+
+        consumption.status = 'active'
+        consumption.save()
+        inventory.consumptions.append(consumption)
+        inventory.save()
+
+        if consuming_size == 0:
+            break
+
+    consuming_data['item'] = item
+    consuming_data['id'] = None
+
+    return render_json(schema.dump(consuming_data).data)
